@@ -1,15 +1,24 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 )
+
+func validate(pilihan string) (bool, error) {
+	if strings.TrimSpace(pilihan) == "" {
+		return false, errors.New("Pilihan yang anda inputkan kosong.")
+	}
+	return true, nil
+}
 
 func main() {
 	var pilih string
 	var makanan []string
 	var yt string
 	var x = true
+
 	for x {
 		fmt.Println("TOKO MAKANAN INDONESIA")
 		fmt.Println("===========================")
@@ -21,17 +30,23 @@ func main() {
 		fmt.Println("Ayam")
 		fmt.Println("============================")
 		fmt.Print("Masukkan Pilihan Menu Anda Dalam Huruf (eg: tahu,) : ")
-		fmt.Scan(&pilih)
+		fmt.Scanln(&pilih)
 
-		pilih = strings.ToLower(pilih)
-		if pilih == "tahu" || pilih == "tempe" || pilih == "sambal" || pilih == "nasi" || pilih == "lele" || pilih == "ayam" {
-			makanan = append(makanan, pilih)
+		if valid, err := validate(pilih); valid {
+			pilih = strings.ToLower(pilih)
+			if pilih == "tahu" || pilih == "tempe" || pilih == "sambal" || pilih == "nasi" || pilih == "lele" || pilih == "ayam" {
+				makanan = append(makanan, pilih)
+				pilih = ""
+			} else {
+				fmt.Println("\nPesanan yang diinputkan tidak terdaftar dalam menu.")
+				fmt.Println(err.Error())
+			}
 		} else {
-			fmt.Println("\nPesanan yang diinputkan tidak terdaftar dalam menu.")
+			fmt.Println(err.Error())
 		}
 
 		fmt.Print("\nLanjut memesan? (Y/T): ")
-		fmt.Scan(&yt)
+		fmt.Scanln(&yt)
 
 		yt = strings.ToUpper(yt)
 		if yt == "T" {
